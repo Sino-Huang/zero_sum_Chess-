@@ -116,7 +116,8 @@ isShipAtCoord :: Coordinate -> Ships -> Bool
 isShipAtCoord (x, y) grid = grid !! (fromIntegral y) !! (fromIntegral x)
 
 placeShip :: GenShips -> Coordinate -> Direction -> ShipType -> GenShips
-placeShip gen (x,y) direc shipt =  gen{gsShips = case direc of
+placeShip gen (x,y) direc shipt
+    | validPlacement gen (x,y) direc shipt == True  =  gen{gsShips = case direc of
                                           Down -> case shipt of
                                               Carrier ->  updatesimpledown 5 (gsShips gen) x y
                                               Battleship ->  updatesimpledown 4 (gsShips gen) x y
@@ -145,9 +146,9 @@ placeShip gen (x,y) direc shipt =  gen{gsShips = case direc of
                                               Destroyer ->  updatesimpleleft 2 (gsShips gen) x y ,
 
                                       existingShips = shipt : (existingShips (gen)),
-                                      finished = if (length([x | x <- (shipt : existingShips (gen)), x == Carrier, x == Destroyer, x == Submarine, x == Cruiser, x == Battleship])) == 5 then True else False
+                                      finished = if (length([x | x <- (shipt : (existingShips (gen))), x == Carrier || x == Destroyer || x == Submarine || x == Cruiser || x == Battleship])) == 5 then True else False}
 
-}
+    | otherwise = gen
 
     where
 
@@ -234,4 +235,4 @@ getShips GenShips{gsShips = n } = n
 getShipType :: GenShips -> [ShipType]
 getShipType GenShips {existingShips = n} = n
 
-testselect = [x | x <- (testnewboard !! 1 ++ testnewboard !! 2) , x == Unchecked]
+testselect = [x | x <- (testnewboard !! 1 ++ testnewboard !! 2) , x == Unchecked || x == Hit]
