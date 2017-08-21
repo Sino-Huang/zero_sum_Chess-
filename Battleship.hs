@@ -145,7 +145,7 @@ placeShip gen (x,y) direc shipt =  gen{gsShips = case direc of
                                               Destroyer ->  updatesimpleleft 2 (gsShips gen) x y ,
 
                                       existingShips = shipt : (existingShips (gen)),
-                                      finished = if (length( [x | x <- (shipt : existingShips (gen)), x == Carrier, x == Destroyer, x == Submarine, x == Cruiser, x == Battleship])) == 5 then True else False
+                                      finished = if (length([x | x <- (shipt : existingShips (gen)), x == Carrier, x == Destroyer, x == Submarine, x == Cruiser, x == Battleship])) == 5 then True else False
 
 }
 
