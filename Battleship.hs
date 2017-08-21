@@ -171,7 +171,9 @@ placeShip gen (x,y) direc shipt =  gen{gsShips = case direc of
 
 transitionState :: State -> Coordinate -> State
 transitionState state (x,y)
-     | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == True =  state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Hit )),
+    | x >= 0 && x <= 9 && y >= 0 && y <= 9 = case condition state of
+        Playing
+            | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == True -> state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Hit )),
                                                                   ships = ships state,
                                                                   condition = case length([x | x <- ((board state) !! 0 ++ (board state) !! 1 ++ (board state) !! 2 ++ (board state) !! 3 ++ (board state) !! 4 ++ (board state) !! 5 ++ (board state) !! 6 ++ (board state) !! 7 ++ (board state) !! 8 ++ (board state) !! 9), x == Hit]) of
                                                                       16
@@ -185,7 +187,7 @@ transitionState state (x,y)
                                                                       _ -> numMoves state + 1 }
 
 
-     | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == False =  state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Miss )),
+            | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == False ->  state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Miss )),
                                                                   ships = ships state,
                                                                   condition = case length([x | x <- ((board state) !! 0 ++ (board state) !! 1 ++ (board state) !! 2 ++ (board state) !! 3 ++ (board state) !! 4 ++ (board state) !! 5 ++ (board state) !! 6 ++ (board state) !! 7 ++ (board state) !! 8 ++ (board state) !! 9), x == Hit]) of
                                                                       17
@@ -196,7 +198,10 @@ transitionState state (x,y)
                                                                           | numMoves state >= 19 -> Lost ,
                                                                   numMoves = numMoves state + 1 }
 
+        _ -> state
+    | otherwise = state
 
+-- all these are test functions and variables
 testnewships :: Ships
 testnewships = replicate 10 (replicate 10 False)
 
