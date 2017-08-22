@@ -146,28 +146,36 @@ placeShip gen (x,y) direc shipt
                                               Destroyer ->  updatesimpleleft 2 (gsShips gen) x y ,
 
                                       existingShips = shipt : (existingShips (gen)),
-                                      finished = if (length([x | x <- (shipt : (existingShips (gen))), x == Carrier || x == Destroyer || x == Submarine || x == Cruiser || x == Battleship])) == 5 then True else False}
+                                      finished = if (length([shipstypes | shipstypes <- (shipt : (existingShips (gen))),
+                                       shipstypes == Carrier || shipstypes == Destroyer || shipstypes == Submarine
+                                       || shipstypes == Cruiser || shipstypes == Battleship])) == 5 then True else False}
 
     | otherwise = gen
 
     where
 
     updatesimpledown :: Integer -> Ships -> Integer -> Integer  -> Ships
-    updatesimpledown length ships coordx coordy
-        | length == 1 = updateList ships (fromIntegral coordy) (updateList (ships !! (fromIntegral coordy)) (fromIntegral coordx) True)
-        | length > 1  =  updatesimpledown 1 (updatesimpledown (length - 1) ships coordx coordy) coordx (coordy + length - 1)
+    updatesimpledown lengthofship shipsmap coordx coordy
+        | lengthofship == 1 = updateList shipsmap (fromIntegral coordy) (updateList (shipsmap !! (fromIntegral coordy)) (fromIntegral coordx) True)
+        | lengthofship > 1  =  updatesimpledown 1 (updatesimpledown (lengthofship - 1) shipsmap coordx coordy) coordx (coordy + lengthofship - 1)
+        | otherwise = error "length is bigger than 1"
     updatesimpleup :: Integer -> Ships -> Integer -> Integer  -> Ships
-    updatesimpleup length ships coordx coordy
-        | length == 1 = updateList ships (fromIntegral coordy) (updateList (ships !! (fromIntegral coordy)) (fromIntegral coordx) True)
-        | length > 1  =  updatesimpleup 1 (updatesimpleup (length - 1) ships coordx coordy) coordx (coordy - length + 1)
+    updatesimpleup lengthofship shipsmap coordx coordy
+        | lengthofship == 1 = updateList shipsmap (fromIntegral coordy) (updateList (shipsmap !! (fromIntegral coordy)) (fromIntegral coordx) True)
+        | lengthofship > 1  =  updatesimpleup 1 (updatesimpleup (lengthofship - 1) shipsmap coordx coordy) coordx (coordy - lengthofship + 1)
+        | otherwise = error "length is bigger than 1"
+
     updatesimpleleft :: Integer -> Ships -> Integer -> Integer  -> Ships
-    updatesimpleleft length ships coordx coordy
-        | length == 1 = updateList ships (fromIntegral coordy) (updateList (ships !! (fromIntegral coordy)) (fromIntegral coordx) True)
-        | length > 1  =  updatesimpleleft 1 (updatesimpleleft (length - 1) ships coordx coordy) (coordx - length + 1) coordy
+    updatesimpleleft lengthofship shipsmap coordx coordy
+        | lengthofship == 1 = updateList shipsmap (fromIntegral coordy) (updateList (shipsmap !! (fromIntegral coordy)) (fromIntegral coordx) True)
+        | lengthofship > 1  =  updatesimpleleft 1 (updatesimpleleft (lengthofship - 1) shipsmap coordx coordy) (coordx - lengthofship + 1) coordy
+        | otherwise = error "length is bigger than 1"
+
     updatesimpleright :: Integer -> Ships -> Integer -> Integer  -> Ships
-    updatesimpleright length ships coordx coordy
-        | length == 1 = updateList ships (fromIntegral coordy) (updateList (ships !! (fromIntegral coordy)) (fromIntegral coordx) True)
-        | length > 1  =  updatesimpleright 1 (updatesimpleright (length - 1) ships coordx coordy) (coordx + length-1) coordy
+    updatesimpleright lengthofship shipsmap coordx coordy
+        | lengthofship == 1 = updateList shipsmap (fromIntegral coordy) (updateList (shipsmap !! (fromIntegral coordy)) (fromIntegral coordx) True)
+        | lengthofship > 1  =  updatesimpleright 1 (updatesimpleright (lengthofship - 1) shipsmap coordx coordy) (coordx + lengthofship-1) coordy
+        | otherwise = error "length is bigger than 1"
 
 
 transitionState :: State -> Coordinate -> State
@@ -176,13 +184,11 @@ transitionState state (x,y)
         Playing
             | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == True -> state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Hit )),
                                                                   ships = ships state,
-                                                                  condition = case length([x | x <- ((board state) !! 0 ++ (board state) !! 1 ++ (board state) !! 2 ++ (board state) !! 3 ++ (board state) !! 4 ++ (board state) !! 5 ++ (board state) !! 6 ++ (board state) !! 7 ++ (board state) !! 8 ++ (board state) !! 9), x == Hit]) of
-                                                                      16
-                                                                          | numMoves state < 20 -> Won
-                                                                          | numMoves state >= 20 -> Lost
-                                                                      _
-                                                                          | numMoves state < 20 -> Playing
-                                                                          | numMoves state >= 20 -> Lost ,
+                                                                  condition = if length([allboardelement | allboardelement <- ((board state) !! 0 ++ (board state) !! 1 ++ (board state)
+                                                                  !! 2 ++ (board state) !! 3 ++ (board state) !! 4 ++ (board state) !! 5 ++ (board state) !! 6 ++ (board state) !! 7 ++
+                                                                  (board state) !! 8 ++ (board state) !! 9), allboardelement == Hit]) >= 16 then (if numMoves state < 20 then Won else Lost)
+                                                                  else (if numMoves state < 20 then Playing else Lost),
+
                                                                   numMoves = case (((board state) !! (fromIntegral y)) !!(fromIntegral x )) of
                                                                       Unchecked -> numMoves state
                                                                       _ -> numMoves state + 1 }
@@ -190,49 +196,10 @@ transitionState state (x,y)
 
             | (ships state !! (fromIntegral y)) !!(fromIntegral x ) == False ->  state{board = (updateList (board state) (fromIntegral y )(updateList ((board state) !! (fromIntegral y)) (fromIntegral x) Miss )),
                                                                   ships = ships state,
-                                                                  condition = case length([x | x <- ((board state) !! 0 ++ (board state) !! 1 ++ (board state) !! 2 ++ (board state) !! 3 ++ (board state) !! 4 ++ (board state) !! 5 ++ (board state) !! 6 ++ (board state) !! 7 ++ (board state) !! 8 ++ (board state) !! 9), x == Hit]) of
-                                                                      17
-                                                                          | numMoves state < 19 -> Won
-                                                                          | numMoves state >= 19 -> Lost
-                                                                      _
-                                                                          | numMoves state < 19 -> Playing
-                                                                          | numMoves state >= 19 -> Lost ,
+                                                                  condition = if numMoves state < 19 then Playing else Lost ,
+
                                                                   numMoves = numMoves state + 1 }
 
         _ -> state
     | otherwise = state
 
--- all these are test functions and variables
-testnewships :: Ships
-testnewships = replicate 10 (replicate 10 False)
-
-testnewgenship :: GenShips
-testnewgenship = GenShips {gsShips = testnewships , existingShips =[], finished =False}
-
-testnewboard :: Board
-testnewboard = replicate 10 (replicate 10 Unchecked)
-
-testnewstate :: State
-testnewstate = State {board = testnewboard, ships = testnewships, condition = Playing, numMoves = 0 }
-
-testnewstate3 :: State
-testnewstate3 = State {board = testnewboard, ships = testnewships, condition = Playing, numMoves = 18 }
-
-
-testnewboard1 :: Board
-testnewboard1 = [Unchecked, Hit, Hit, Hit, Hit, Hit, Hit, Hit, Hit, Hit] : [Hit, Hit, Hit, Hit, Hit, Hit, Hit, Miss, Miss, Miss] : (replicate 8 (replicate 10 Unchecked))
-
-testnewships1 :: Ships
-testnewships1 = (replicate 10 True) : (replicate 9 (replicate 10 False))
-
-testnewstate1 :: State
-testnewstate1 = State {board = testnewboard1, ships = testnewships1, condition = Playing, numMoves = 18 }
-
-
-getShips :: GenShips -> Ships
-getShips GenShips{gsShips = n } = n
-
-getShipType :: GenShips -> [ShipType]
-getShipType GenShips {existingShips = n} = n
-
-testselect = [x | x <- (testnewboard !! 1 ++ testnewboard !! 2) , x == Unchecked || x == Hit]
