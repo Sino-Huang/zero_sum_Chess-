@@ -38,7 +38,7 @@ showBoard cells = "+" ++ replicate 21 '-' ++ "+\n"
 
 
 data Cell = Unchecked | Hit | Miss
-    deriving (Show, Read, Eq )
+    deriving (Show, Read,Eq)
 
 
 
@@ -146,9 +146,7 @@ placeShip gen (x,y) direc shipt
                                               Destroyer ->  updatesimpleleft 2 (gsShips gen) x y ,
 
                                       existingShips = shipt : (existingShips (gen)),
-                                      finished = if (length([shipstypes | shipstypes <- (shipt : (existingShips (gen))),
-                                       shipstypes == Carrier || shipstypes == Destroyer || shipstypes == Submarine
-                                       || shipstypes == Cruiser || shipstypes == Battleship])) == 5 then True else False}
+                                      finished = if length(existingShips (gen)) >= 4 then True else False}
 
     | otherwise = gen
 
