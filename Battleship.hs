@@ -11,10 +11,29 @@
 -- Tutor   :Debashish Chakraborty @u4610248
 -- Lab Time:Thursday 3pm
 
+
+-- | test placeShip function
+-- >>> placeShip testGenShips1 (1,2) Down Destroyer
+-- GenShips {gsShips = [[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,True,False,False,False,False,False,False,False,False],[False,True,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False]], existingShips = [Destroyer], finished = False}
+--
+-- >>> placeShip testGenShips1 (10,10) Down Destroyer
+-- GenShips {gsShips = [[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False]], existingShips = [], finished = False}
+--
+--
+-- | test transitionState
+-- >>> transitionState testState1 (1,1)
+-- State {board = [[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Miss,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked]], ships = [[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False]], condition = Playing, numMoves = 1}
+--
+-- >>> transitionState testState2 (9,1)
+-- State {board = [[Hit,Hit,Hit,Hit,Hit,Hit,Hit,Hit,Hit,Hit],[Hit,Hit,Hit,Hit,Hit,Hit,Unchecked,Unchecked,Unchecked,Hit],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked],[Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked,Unchecked]], ships = [[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,True,True,True,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,True,True,True,False,False,False,False,False,False],[False,False,False,False,False,True,True,True,True,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,True,True]], condition = Won, numMoves = 19}
+
+
+
 module Battleship where
 
 import Data.List
 import Prelude hiding (Left, Right)
+
 
 type Board = Matrix Cell
 type Ships = Matrix Bool
@@ -68,7 +87,7 @@ type ShipsOnGrid = [ShipType]
 data GenShips = GenShips {gsShips       :: Ships,
                           existingShips :: ShipsOnGrid,
                           finished      :: Bool}
-                          deriving (Show, Eq)
+                          deriving (Show)
                     
 -- updateList replaces an element by index in a given list.
 updateList :: [a] -> Int -> a -> [a]
@@ -115,6 +134,9 @@ coordInBound (x, y)
 isShipAtCoord :: Coordinate -> Ships -> Bool
 isShipAtCoord (x, y) grid = grid !! (fromIntegral y) !! (fromIntegral x)
 
+
+-- placeShip generates a new GenShips data once the the new move is a valid move
+-- placeShip use validPlacement to check whether the move is valid or not first.
 placeShip :: GenShips -> Coordinate -> Direction -> ShipType -> GenShips
 placeShip gen (x,y) direc shipt
     | validPlacement gen (x,y) direc shipt == True  =  gen{gsShips = case direc of
@@ -151,7 +173,8 @@ placeShip gen (x,y) direc shipt
     | otherwise = gen
 
     where
-
+-- a group of updatesimple functions are used to update the Ships data in the GenShips data
+-- all updatesimple function series uses recursion
     updatesimpledown :: Integer -> Ships -> Integer -> Integer  -> Ships
     updatesimpledown lengthofship shipsmap coordx coordy
         | lengthofship == 1 = updateList shipsmap (fromIntegral coordy) (updateList (shipsmap !! (fromIntegral coordy)) (fromIntegral coordx) True)
@@ -176,6 +199,8 @@ placeShip gen (x,y) direc shipt
         | otherwise = error "length is bigger than 1"
 
 
+-- transitionState update the State data if the move is valid
+-- transitionState will check the condition of the game first
 transitionState :: State -> Coordinate -> State
 transitionState state (x,y)
     | x >= 0 && x <= 9 && y >= 0 && y <= 9 = case condition state of
@@ -200,4 +225,44 @@ transitionState state (x,y)
 
         _ -> state
     | otherwise = state
+
+-- below are all the test variables for doctest and quickCheck
+
+
+testShip1 :: Ships
+testShip1 = replicate 10 (replicate 10 False)
+
+testShip2 :: Ships
+testShip2 = [[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,False,False,False,True,True,True,False,False,True],[False,False,False,False,False,False,False,False,False,True],[False,True,True,True,False,False,False,False,False,False],[False,False,False,False,False,True,True,True,True,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,False,False],[False,False,False,False,False,False,False,False,True,True]]
+
+testBoard1 :: Board
+testBoard1 = replicate 10 (replicate 10 Unchecked)
+
+testBoard2 :: Board
+testBoard2 = replicate 10 Hit : [Hit,Hit,Hit,Hit,Hit,Hit,Unchecked,Unchecked,Unchecked,Unchecked] : replicate 8 (replicate 10 Unchecked)
+
+testGenShips1 :: GenShips
+testGenShips1 = GenShips testShip1 [] False
+
+testGenShips2 :: GenShips
+testGenShips2 = GenShips testShip2 [Carrier,Battleship,Cruiser,Submarine,Destroyer] True
+
+testState1 :: State
+testState1 = State testBoard1 testShip1 Playing 0
+
+testState2 :: State
+testState2 = State testBoard2 testShip2 Playing 19
+
+testState3 :: State
+testState3 = State testBoard1 testShip2 Won 18
+
+-- prop_coordInBound can be used for quickCheck to check the property of coordInBound function
+prop_coordInBound_ConfirmOut :: Coordinate -> Bool
+prop_coordInBound_ConfirmOut (x,y)
+    | x >= 0 && x <= 9 && y >= 0 && y <= 9 = coordInBound (x,y)
+    | otherwise = not (coordInBound (x,y))
+
+
+
+
 
